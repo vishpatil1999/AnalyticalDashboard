@@ -7,6 +7,7 @@ const axiosClient = axios.create({
   }
 });
 
+
 axiosClient.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -14,5 +15,24 @@ axiosClient.interceptors.request.use((config) => {
   }
   return config;
 });
+
+
+let onUnauthorized = null;
+export const setOnUnauthorized = (callback) => {
+  onUnauthorized = callback;
+};
+
+// Detect expired/invalid tokens on every response
+axiosClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      onUnauthorized?.();
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default axiosClient;

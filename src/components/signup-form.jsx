@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { PhoneCall } from "lucide-react"
 import { signup } from "@/api/authService"
 
 export default function SignupForm({

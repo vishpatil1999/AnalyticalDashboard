@@ -15,7 +15,6 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { PhoneCall } from "lucide-react";
 import { login } from "@/api/authService";
 
 export default function LoginForm({
@@ -23,6 +22,7 @@ export default function LoginForm({
   onLoginSuccess,
   onSwitchToSignup,
   successMessage,
+  warningMessage,
   ...props
 }) {
   const [username, setUsername] = useState("");
@@ -59,6 +59,14 @@ export default function LoginForm({
         <CardContent>
           <form onSubmit={handleSubmit}>
             <FieldGroup>
+              {warningMessage && (
+                <p
+                  className="text-sm text-amber-700 bg-amber-50 border border-amber-100 rounded-md px-3 py-2"
+                  role="status"
+                >
+                  {warningMessage}
+                </p>
+              )}
               {successMessage && (
                 <p
                   className="text-sm text-green-700 bg-green-50 border border-green-100 rounded-md px-3 py-2"

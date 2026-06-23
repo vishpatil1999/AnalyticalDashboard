@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-
+import { setOnUnauthorized } from "./api/axiosClient.jsx";
 import LoginForm from "./components/login-form.jsx";
 import Dashboard from "./components/Dashboard.jsx";
-import  SignupForm  from "./components/signup-form.jsx";
+import SignupForm from "./components/signup-form.jsx";
 function Spinner() {
   return (
     <div className="flex flex-col items-center justify-center h-screen gap-3">
@@ -12,21 +12,20 @@ function Spinner() {
   );
 }
 
-function ErrorState({ message }) {
-  return (
-    <div className="flex flex-col items-center justify-center h-screen gap-2">
-      <p className="text-red-500 font-medium">Failed to load data</p>
-      <p className="text-sm text-muted-foreground">{message}</p>
-    </div>
-  );
-}
-
 export default function App() {
   const [user, setUser] = useState(null);
   const [checkingSession, setCheckingSession] = useState(true);
   const [authView, setAuthView] = useState("login");
-   const [signupMessage, setSignupMessage] = useState('');
+  const [signupMessage, setSignupMessage] = useState("");
+  const [sessionExpiredMessage, setSessionExpiredMessage] = useState('');
 
+  useEffect(() => {
+    setOnUnauthorized(() => {
+      setUser(null);
+      setSessionExpiredMessage("Your session expired. Please log in again.");
+      setAuthView("login");
+    });
+  }, []);
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     const token = localStorage.getItem("token");
@@ -37,10 +36,13 @@ export default function App() {
   }, []);
 
   const handleLoginSuccess = (loggedInUser) => {
+    setSessionExpiredMessage('');
     setUser(loggedInUser);
   };
   const handleSignupSuccess = () => {
-    setSignupMessage(`Account created for "${newUser.username}". Please log in.`);
+    setSignupMessage(
+      `Account created for "${newUser.username}". Please log in.`,
+    );
     setAuthView("login");
   };
 
@@ -63,6 +65,7 @@ export default function App() {
               onLoginSuccess={handleLoginSuccess}
               onSwitchToSignup={() => setAuthView("signup")}
               successMessage={signupMessage}
+              warningMessage={sessionExpiredMessage}
             />
           ) : (
             <SignupForm
