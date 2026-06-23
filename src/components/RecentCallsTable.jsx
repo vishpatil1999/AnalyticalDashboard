@@ -206,7 +206,7 @@ export default function RecentCallsTable() {
               className="h-8 w-36 text-sm"
             />
           </div>
-          <Button type="submit" size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
+          <Button disabled={!cityInput && !callerInput && !fromInput && !toInput} type="submit" size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
             Apply filters
           </Button>
           {hasActiveFilters && (

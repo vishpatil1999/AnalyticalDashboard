@@ -6,12 +6,6 @@ export const fetchKPIs = async () => {
   return response.data; // { totalCalls, totalCost, avgDurationSeconds, successfulCalls, failedCalls }
 };
 
-// GET /api/analytics/top-callers?limit=10
-export const fetchTopCallers = async (limit = 10) => {
-  const response = await axiosClient.get('/analytics/top-callers', { params: { limit } });
-  return response.data; // { topCallers: [...] }
-};
-
 // GET /api/analytics/duration-stats
 export const fetchDurationStats = async () => {
   const response = await axiosClient.get('/analytics/duration-stats');
