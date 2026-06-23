@@ -1,0 +1,78 @@
+
+import { useCDRData } from '../hooks/useCDRData.jsx';
+import KPICards         from './KPICards.jsx';
+import DurationChart    from './DurationChart.jsx';
+import CostChart        from './CostChart.jsx';
+import ActivityTimeline from './ActivityTimeline.jsx';
+import CityChart        from './CityChart.jsx';
+import RecentCallsTable from './RecentCallsTable.jsx';
+import { PhoneCall, LogOut } from 'lucide-react';
+export default function Dashboard({ user, onLogout }) {
+  const {
+    loading, error,
+    kpis, durationStats,
+    costByCity, callsPerHour,
+    callsPerDay, callsByCity,
+    recentCalls,
+  } = useCDRData();
+
+  if (loading) return <Spinner />;
+  if (error)   return <ErrorState message={error} />;
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+
+      {/* Header */}
+      <header className="bg-white border-b border-gray-200 px-6 py-4">
+        <div className="max-w-screen-xl mx-auto flex items-center gap-3">
+          <div className="bg-blue-600 p-2 rounded-lg">
+            <PhoneCall className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-lg font-semibold text-gray-900">CDR Analytics</h1>
+            <p className="text-xs text-muted-foreground">Call Data Record Dashboard</p>
+          </div>
+          <div className="ml-auto flex items-center gap-4">
+            <div className="text-xs text-muted-foreground">
+              {kpis.totalCalls} records loaded
+            </div>
+            <div className="text-xs text-gray-500 border-l border-gray-200 pl-4">
+              {user?.username} <span className="text-gray-400">({user?.role})</span>
+            </div>
+            <button
+              onClick={onLogout}
+              className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-900 transition-colors"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              Logout
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Main content */}
+      <main className="max-w-screen-xl mx-auto px-6 py-6 space-y-6">
+
+        {/* Row 1: KPI Cards */}
+        <KPICards kpis={kpis} />
+
+        {/* Row 2: Duration + Cost */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <DurationChart data={durationStats.chartData} stats={durationStats} />
+          <CostChart     data={costByCity} />
+        </div>
+
+        {/* Row 3: Timeline */}
+        <ActivityTimeline hourly={callsPerHour} daily={callsPerDay} />
+
+        {/* Row 4: City pie + ranking */}
+        <CityChart data={callsByCity} />
+
+        {/* Row 5: Recent calls table */}
+        <RecentCallsTable calls={recentCalls} />
+
+      </main>
+
+    </div>
+  );
+}
