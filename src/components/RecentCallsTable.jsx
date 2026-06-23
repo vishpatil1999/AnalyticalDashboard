@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/table";
 import { formatDuration, formatCost, formatDateTime } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, ChevronUp, ChevronDown, X } from "lucide-react";
-import { fetchCallRecords } from "@/api/cdrService";
+import { fetchCallRecords } from "../api/analyticsService.jsx";
 
 const PAGE_SIZE = 20;
 
